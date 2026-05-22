@@ -1,0 +1,37 @@
+<Project>
+  <PropertyGroup>
+    <BBSharedKernelPath>
+      $(MSBuildThisFileDirectory)src/BuildingBlocks/BuildingBlocks.SharedKernel/BuildingBlocks.SharedKernel.csproj
+    </BBSharedKernelPath>
+    <BBInfrastructurePath>
+      $(MSBuildThisFileDirectory)src/BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj
+    </BBInfrastructurePath>
+    <BBApplicationPath>
+      $(MSBuildThisFileDirectory)src/BuildingBlocks/BuildingBlocks.Application/BuildingBlocks.Application.csproj
+    </BBApplicationPath>
+  </PropertyGroup>
+
+<!--  <PropertyGroup Condition="-->
+<!--    $([System.String]::Copy('$(MSBuildProjectFullPath)').Contains('Modules')) -->
+<!--    AND $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Domain'))">-->
+<!--    <NoWarn>CS8618</NoWarn>-->
+<!--  </PropertyGroup>-->
+
+  <ItemGroup Condition="
+    $([System.String]::Copy('$(MSBuildProjectFullPath)').Contains('Modules')) 
+    AND $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Domain'))">
+    <ProjectReference Include="$(BBSharedKernelPath)"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="
+    $([System.String]::Copy('$(MSBuildProjectFullPath)').Contains('Modules'))
+    AND $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Infrastructure'))">
+    <ProjectReference Include="$(BBInfrastructurePath)"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="
+    $([System.String]::Copy('$(MSBuildProjectFullPath)').Contains('Modules'))
+    AND $([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Application'))">
+    <ProjectReference Include="$(BBApplicationPath)"/>
+  </ItemGroup>
+</Project>

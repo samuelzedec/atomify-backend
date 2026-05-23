@@ -1,0 +1,49 @@
+name: ci.yml
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-analyze:
+    name: Build, Test & SonarQube
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+
+      - name: Install SonarScanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+
+      - name: Begin SonarQube Analysis
+        run: |
+          dotnet sonarscanner begin \
+            /k:"atomify-backend" \
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" \
+            /d:sonar.exclusions="**/Migrations/**,**/bin/**,**/obj/**,**/appsettings*.json,**/Dockerfile*,**/Seeders/**,**/*.html,**/Mappings/**" \
+            /d:sonar.coverage.exclusions="**/Migrations/**,**/Program.cs,**/*Validator.cs,**/Extensions/**,**/Repositories/**,**/Options/**,**/Constants/**,**/Dtos/**,**/DomainEvents/**,**/Exceptions/**,**/Abstractions/**,**/DependencyInjection.cs,**/Requests/**,**/EventHandlers/**"
+
+      - name: Build
+        run: dotnet build Atomify.slnx --no-incremental
+
+      - name: Test with Coverage
+        run: |
+          dotnet-coverage collect \
+            "dotnet test Atomify.slnx --no-build" \
+            -f xml \
+            -o coverage.xml
+
+      - name: End SonarQube Analysis
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

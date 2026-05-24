@@ -72,7 +72,7 @@ public abstract class EntityDataTypeConfiguration<T> : IEntityTypeConfiguration<
     /// <param name="builder">
     /// O construtor de configuração do Entity Framework para o tipo da entidade.
     /// </param>
-    protected void ApplySoftDeleteQueryFilter<TSoftDeletable>(EntityTypeBuilder<TSoftDeletable> builder)
+    protected static void ApplySoftDeleteQueryFilter<TSoftDeletable>(EntityTypeBuilder<TSoftDeletable> builder)
         where TSoftDeletable : EntityData, ISoftDeletable
         => builder.HasQueryFilter(x => !x.DeletedAt.HasValue);
 }

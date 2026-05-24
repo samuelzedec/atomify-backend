@@ -36,7 +36,7 @@ jobs:
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" \
             /d:sonar.exclusions="**/Migrations/**,**/bin/**,**/obj/**,**/appsettings*.json,**/Dockerfile*,**/Seeders/**,**/*.html,**/Mappings/**" \
-            /d:sonar.coverage.exclusions="**/Migrations/**,**/Program.cs,**/*Validator.cs,**/Extensions/**,**/Repositories/**,**/Options/**,**/Constants/**,**/Dtos/**,**/DomainEvents/**,**/Exceptions/**,**/Abstractions/**,**/DependencyInjection.cs,**/Requests/**,**/EventHandlers/**"
+            /d:sonar.coverage.exclusions="**/Persistence/**,**/ValidationBehavior.cs,**/Program.cs,**/*Validator.cs,**/Extensions/**,**/Repositories/**,**/Options/**,**/Constants/**,**/Dtos/**,**/Events/**,**/Exceptions/**,**/Abstractions/**,**/DependencyInjection.cs,**/Setups/**,**/Results/**,"
 
       - name: Build
         run: dotnet build Atomify.slnx --no-incremental

@@ -29,7 +29,8 @@ jobs:
         run: |
           dotnet sonarscanner begin \
             /k:"atomify-backend" \
-            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /o:"samuelzedec" \
+            /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" \
             /d:sonar.exclusions="**/Migrations/**,**/bin/**,**/obj/**,**/appsettings*.json,**/Dockerfile*,**/Seeders/**,**/*.html,**/Mappings/**" \

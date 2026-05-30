@@ -21,11 +21,8 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Install SonarScanner
-        run: dotnet tool install --global dotnet-sonarscanner
-
-      - name: Install dotnet-coverage
-        run: dotnet tool install --global dotnet-coverage
+      - name: Restore tools
+        run: dotnet tool restore
 
       - name: Begin SonarQube Analysis
         run: |

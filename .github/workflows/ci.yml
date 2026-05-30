@@ -29,9 +29,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Add dotnet tools to PATH
-        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
       - name: Restore tools
         run: dotnet tool restore
 
@@ -54,7 +51,7 @@ jobs:
 
       - name: Test with Coverage
         run: |
-          dotnet-coverage collect \
+          dotnet tool run dotnet-coverage collect \
             "dotnet test -c Release --no-build --no-restore" \
             -f xml \
             -o coverage.xml

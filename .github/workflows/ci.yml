@@ -21,6 +21,17 @@ jobs:
         with:
           dotnet-version: '10.x'
 
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Restore tools
         run: dotnet tool restore
 
@@ -33,15 +44,18 @@ jobs:
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" \
             /d:sonar.exclusions="**/Migrations/**,**/bin/**,**/obj/**,**/appsettings*.json,**/Dockerfile*,**/Seeders/**,**/*.html,**/Mappings/**" \
-            /d:sonar.coverage.exclusions="**/Persistence/**,**/ValidationBehavior.cs,**/Program.cs,**/*Validator.cs,**/Extensions/**,**/Repositories/**,**/Options/**,**/Constants/**,**/Dtos/**,**/Events/**,**/Exceptions/**,**/Abstractions/**,**/DependencyInjection.cs,**/Setups/**,**/Results/**,"
+            /d:sonar.coverage.exclusions="**/Persistence/**,**/ValidationBehavior.cs,**/Program.cs,**/*Validator.cs,**/Extensions/**,**/Repositories/**,**/Options/**,**/Constants/**,**/Dtos/**,**/Events/**,**/Exceptions/**,**/Abstractions/**,**/DependencyInjection.cs,**/Setups/**,**/Results/**"
+
+      - name: Restore packages
+        run: dotnet restore
 
       - name: Build
-        run: dotnet build Atomify.slnx --no-incremental
+        run: dotnet build -c Release --no-incremental --no-restore
 
       - name: Test with Coverage
         run: |
           dotnet-coverage collect \
-            "dotnet test Atomify.slnx --no-build" \
+            "dotnet test -c Release --no-build --no-restore" \
             -f xml \
             -o coverage.xml
 
